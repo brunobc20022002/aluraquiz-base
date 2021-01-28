@@ -1,19 +1,16 @@
-//Com styled-Components 
-import styled from 'styled-components'
+import styled from 'styled-components';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import React from 'react';
 import db from '../db.json';
-import Widget from '../src/components/Widget'
-import Footer from '../src/components/Footer'
-import GitHubCorner from '../src/components/GitHubCorner'
-import QuizBackground from '../src/components/QuizBackground'
-
-//Com react
-// function Title(props){ //propcidades/propriedades
-//   return (
-//     <h1>
-//       {props.children}
-//     </h1>
-//   )
-// }
+import Widget from '../src/components/Widget';
+import Footer from '../src/components/Footer';
+import GitHubCorner from '../src/components/GitHubCorner';
+import QuizBackground from '../src/components/QuizBackground';
+// Comandos:
+// npm run dev
+// npx eslint --init
+// npx lint
 
 export const QuizContainer = styled.div`
   width: 100%;
@@ -26,39 +23,49 @@ export const QuizContainer = styled.div`
   }
 `;
 
-// const BackgroundImage= styled.div`
-//   background-image: url(${db.bg});
-//   flex:1;
-//   background-size:cover;
-//   background-position:center;
-// `;
-
 export default function Home() {
+  const router = useRouter();
+  const [name, setName] = React.useState('');
   return (
     <QuizBackground backgroundImage={db.bg}>
       <QuizContainer>
+        <Head>
+          <title>AluraQuiz - C#</title>
+        </Head>
         <Widget>
           <Widget.Header>
             <h1>C#</h1>
           </Widget.Header>
           <Widget.Content>
             <p>Teste os seus conhecimentos sobre C#</p>
-            <p><input type="string" value="Qual é o seu nome?"></input><br/></p>
-            <p><input type="button" value="JOGAR"></input></p>
-            
+            <form onSubmit={function (infosDoEvento) {
+              infosDoEvento.preventDefault();
+
+              router.push(`/quiz?name=${name}`);
+              console.log('Enviando');
+            }}
+            >
+              <input
+                placeholder="Qual é o seu nome?"
+                onChange={function (infosDoEvento) {
+                  // name = infosDoEvento.target.value;
+                  setName(infosDoEvento.target.value);
+                }}
+              />
+              <button type="submit" disabled={name.length === 0}>JOGAR</button>
+              <br />
+            </form>
           </Widget.Content>
         </Widget>
-
         <Widget>
-        <Widget.Content>
-          <h1>Quizes da galera</h1>
-          <p>Conheça outros quizes que a comunidade desenvolveu durante a imersão-React:</p>
-        </Widget.Content>
+          <Widget.Content>
+            <h1>Quizes da galera</h1>
+            <p>Conheça outros quizes que a comunidade desenvolveu durante a imersão-React:</p>
+          </Widget.Content>
         </Widget>
-        <Footer/>
+        <Footer />
       </QuizContainer>
-      <GitHubCorner projectUrl=""/>
+      <GitHubCorner projectUrl="" />
     </QuizBackground>
-
-    );
+  );
 }
